@@ -18,10 +18,9 @@ class S3dmmcomSpider(CrawlSpider):
 	allowed_domains = ['3dmm.com']
 	start_urls = ['http://3dmm.com/forumdisplay.php?f=6']
 
-	rules = (
+	rules = [
 		Rule(LxmlLinkExtractor(allow=r'showthread\.php\?(.*)\bt=',deny='(page=)|(#)|(\?p=)|(#post)|(goto=lastpost)'), callback='movie_page', follow=False),
-		#Rule(LxmlLinkExtractor(allow=r'forumdisplay\.php\?(.*)\bf=6\b(.*)\bpage='),),
-	)
+	]
 
 	def movie_page(self, response):
 
@@ -46,3 +45,10 @@ class S3dmmcomSpider(CrawlSpider):
 			item['meta']['version']=version[0].strip()
 
 		return item
+
+class S3dmmcomAllPagesSpider(S3dmmcomSpider):
+	name = 's3dmmcomAllPages'
+
+	rules = S3dmmcomSpider.rules + [
+		Rule(LxmlLinkExtractor(allow=r'forumdisplay\.php\?(.*)\bf=6\b(.*)\bpage='),),
+	]
